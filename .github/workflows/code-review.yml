@@ -1,0 +1,40 @@
+name: Code Review
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  issue_comment:
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  review:
+    name: Code Review
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Get PR info
+        id: pr_info
+        run: |
+          echo "PR Title: ${{ github.event.pull_request.title }}"
+          echo "PR Number: ${{ github.event.pull_request.number }}"
+          echo "Author: ${{ github.event.pull_request.user.login }}"
+          echo "Branch: ${{ github.event.pull_request.head.ref }}"
+          echo "Base: ${{ github.event.pull_request.base.ref }}"
+
+      - name: Run code review checks
+        run: |
+          echo "=== Code Review Summary ==="
+          echo ""
+          echo "## Files Changed"
+          git diff --name-only ${{ github.event.pull_request.base.sha }} HEAD
+          echo ""
+          echo "## Lines Changed"
+          git diff --stat ${{ github.event.pull_request.base.sha }} HEAD
