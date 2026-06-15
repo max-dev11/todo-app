@@ -263,11 +263,11 @@ jobs:
 
       - name: Test Django check
         run: |
-          python manage.py check
+          DJANGO_SETTINGS_MODULE=todo_project.settings python manage.py check
 
       - name: Validate URLs
         run: |
-          python -c "
+          DJANGO_SETTINGS_MODULE=todo_project.settings python -c "
           import django
           django.setup()
           from django.urls import get_resolver
@@ -307,7 +307,7 @@ jobs:
 
       - name: Check migrations
         run: |
-          python manage.py makemigrations --check --dry-run
+          DJANGO_SETTINGS_MODULE=todo_project.settings python manage.py makemigrations --check --dry-run
 
       - name: Create distribution packages
         run: |
